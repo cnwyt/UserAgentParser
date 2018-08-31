@@ -114,6 +114,20 @@ class UserAgentParser implements \JsonSerializable
         'Mozilla' => 'Mozilla',
     ];
 
+    public function getSystem()
+    {
+        foreach ($this->systemRules as $key => $regex) {
+            if ($regex && $this->pregMatch($regex, $this->userAgent)) {
+                $this->device = [
+                    'name' => $key,
+                    'version' => $this->matchArray[1] ?? '',
+                ];
+                break;
+            }
+        }
+        return $this->device;
+    }
+
     public function getDevice()
     {
         foreach ($this->deviceRules as $key => $regex) {
@@ -175,6 +189,14 @@ class UserAgentParser implements \JsonSerializable
     public function isWechatBrowser()
     {
         return stripos($this->userAgent, 'MicroMessenger') !== false;
+    }
+    public function getWechatVersion()
+    {
+        if ($this->pregMatch('MicroMessenger/' . $this->versionRegex, $this->userAgent)) {
+            return $this->matchArray[1] ?? '';
+        }
+
+        return false;
     }
 
 }
