@@ -172,7 +172,7 @@ class UserAgentParser implements \JsonSerializable
         return stripos($this->userAgent, 'Android') !== false;
     }
 
-    public function isWechatBrower()
+    public function isWechatBrowser()
     {
         return stripos($this->userAgent, 'MicroMessenger') !== false;
     }
