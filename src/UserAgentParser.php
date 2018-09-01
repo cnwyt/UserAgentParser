@@ -75,18 +75,28 @@ class UserAgentParser implements \JsonSerializable
         'iPhone' => '\biPhone\b|\biPod\b',
         'OPPO R11st' => 'OPPO R11st',
         'OPPO' => 'OPPO',
+        'SAMSUNG-G900P' => 'SM-G900P',
+        'SAMSUNG-N900T' => 'SM-N900T',
+        'Pixel 2 XL' => 'Pixel 2 XL',
+        'Pixel 2' => 'Pixel 2',
+        'Nexus' => 'Nexus',
+        'Lumia 520' => 'Lumia 520',
+        'NOKIA' => 'NOKIA',
+
         // tablet
         'iPad' => 'iPad|iPad.*Mobile',
 
+        'MacOSX(Intel)' => 'Intel Mac OS X',
         'Mac' => 'Macintosh',
     ];
 
     protected $systemRules = [
         'AndroidOS' => 'Android',
         'iOS' => '\biPhone.*Mobile|\biPod|\biPad|AppleCoreMedia',
+        'Windows Phone' => 'Windows Phone',
         'Windows' => 'Windows',
         'Windows NT' => 'Windows NT',
-        'MacOSX' => 'Mac OS X',
+        'Mac OS X' => 'Mac OS X',
         'Debian' => 'Debian',
         'Ubuntu' => 'Ubuntu',
         'Macintosh' => 'PPC',
@@ -98,27 +108,27 @@ class UserAgentParser implements \JsonSerializable
     protected $browserRules = [
         'MQQBrowser' => 'MQQBrowser/VER',
         'Opera' => 'OPR/(VER)',
-        'UCBrowser' => 'UCBrowser',
-        'UCWEB' => 'UCWEB',
-        'Edge' => 'Edge',
-        'Vivaldi' => 'Vivaldi',
-        'Chrome' => 'Chrome',
-        'Firefox' => 'Firefox',
-        'Safari' => 'Safari',
+        'UCBrowser' => 'UCBrowser/VER',
+        'UCWEB' => 'UCWEB/VER',
+        'Edge' => 'Edge/VER',
+        'Vivaldi' => 'Vivaldi/VER',
+        'Chrome' => 'Chrome/VER',
+        'Firefox' => 'Firefox/VER',
+        'Safari' => 'Safari/VER',
         'IE' => 'MSIE|IEMobile|MSIEMobile|Trident/[.0-9]+',
         'Bolt' => 'bolt',
         'TeaShark' => 'teashark',
         'Blazer' => 'Blazer',
         'baiduboxapp' => 'baiduboxapp',
         'baidubrowser' => 'baidubrowser',
-        'Mozilla' => 'Mozilla',
+        'Mozilla' => 'Mozilla/VER',
     ];
 
     public function getSystem()
     {
         foreach ($this->systemRules as $key => $regex) {
             if ($regex && $this->pregMatch($regex, $this->userAgent)) {
-                $this->device = [
+                $this->system = [
                     'name' => $key,
                     'version' => $this->matchArray[1] ?? '',
                 ];
@@ -126,6 +136,15 @@ class UserAgentParser implements \JsonSerializable
             }
         }
         return $this->device;
+    }
+
+    public function getSystemName()
+    {
+        if (empty($this->system)) {
+            $this->getSystem();
+        }
+
+        return !empty($this->system['name']) ? $this->system['name'] : 'unknown';
     }
 
     public function getDevice()
@@ -140,6 +159,15 @@ class UserAgentParser implements \JsonSerializable
             }
         }
         return $this->device;
+    }
+
+    public function getDeviceName()
+    {
+        if (empty($this->device)) {
+            $this->getDevice();
+        }
+
+        return !empty($this->device['name']) ? $this->device['name'] : 'unknown';
     }
 
     public function getBrowserName()
@@ -189,14 +217,6 @@ class UserAgentParser implements \JsonSerializable
     public function isWechatBrowser()
     {
         return stripos($this->userAgent, 'MicroMessenger') !== false;
-    }
-    public function getWechatVersion()
-    {
-        if ($this->pregMatch('MicroMessenger/' . $this->versionRegex, $this->userAgent)) {
-            return $this->matchArray[1] ?? '';
-        }
-
-        return false;
     }
 
 }

@@ -1,6 +1,6 @@
 {
     "name": "cnwyt/user-agent-parser",
-    "description": "PHP Useragent Parser",
+    "description": "A Simple PHP Useragent Parser",
     "require": {
         "php": ">=7.0"
     },
