@@ -4,6 +4,11 @@ namespace Cnwyt\UserAgentParser;
 
 class UserAgentParser implements \JsonSerializable
 {
+    /**
+     * @var string
+     */
+    protected $version = '0.4.0';
+
     protected $userAgent = '';
     protected $browser = [];
     protected $system = [];
@@ -217,6 +222,14 @@ class UserAgentParser implements \JsonSerializable
     public function isWechatBrowser()
     {
         return stripos($this->userAgent, 'MicroMessenger') !== false;
+    }
+    public function getWechatVersion()
+    {
+        if ($this->pregMatch('MicroMessenger/' . $this->versionRegex, $this->userAgent)) {
+            return $this->matchArray[1] ?? '';
+        }
+
+        return false;
     }
 
 }
