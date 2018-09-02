@@ -114,11 +114,13 @@ class UserAgentParser implements \JsonSerializable
         'MQQBrowser' => 'MQQBrowser/VER', // QQBrowser mobile
         'QQ-MttCustomUA' => 'MttCustomUA/VER', // QQBrowser mobile CustomUA
         'MicroMessenger' => 'MicroMessenger/VER', // Wechat(MicroMessenger)
-        
+
+        'BaiduApp' => 'baiduboxapp/VER',
+        'baidubrowser' => 'baidubrowser/VER',
         'Chrome CriOS' => 'CriOS/VER',
         'Firefox FxiOS' => 'FxiOS/VER',
         'Opera OPiOS' => 'OPiOS/VER',
-        'Opera' => 'OPR/(VER)',
+        'Opera' => 'OPR/VER',
         'UCQuark' => 'Quark/VER', // UCBrowser Quark
         'UCBrowser' => 'UCBrowser/VER',
         'UCWEB' => 'UCWEB/VER',
@@ -136,11 +138,9 @@ class UserAgentParser implements \JsonSerializable
         'Firefox' => 'Firefox/VER',
         'Safari' => 'Safari/VER',
         'IE' => 'MSIE|IEMobile|MSIEMobile|Trident/[.0-9]+',
-        'Bolt' => 'bolt',
-        'TeaShark' => 'teashark',
-        'Blazer' => 'Blazer',
-        'BaiduApp' => 'baiduboxapp',
-        'baidubrowser' => 'baidubrowser',
+        'Bolt' => 'bolt/VER',
+        'TeaShark' => 'teashark/VER',
+        'Blazer' => 'Blazer/VER',
         'Mozilla' => 'Mozilla/VER',
     ];
 
