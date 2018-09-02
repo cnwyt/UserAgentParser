@@ -111,10 +111,25 @@ class UserAgentParser implements \JsonSerializable
     ];
 
     protected $browserRules = [
-        'MQQBrowser' => 'MQQBrowser/VER',
+        'MQQBrowser' => 'MQQBrowser/VER', // QQBrowser mobile
+        'QQ-MttCustomUA' => 'MttCustomUA/VER', // QQBrowser mobile CustomUA
+        'MicroMessenger' => 'MicroMessenger/VER', // Wechat(MicroMessenger)
+        
+        'Chrome CriOS' => 'CriOS/VER',
+        'Firefox FxiOS' => 'FxiOS/VER',
+        'Opera OPiOS' => 'OPiOS/VER',
         'Opera' => 'OPR/(VER)',
+        'UCQuark' => 'Quark/VER', // UCBrowser Quark
         'UCBrowser' => 'UCBrowser/VER',
         'UCWEB' => 'UCWEB/VER',
+
+        'QihooBrowser' => 'QihooBrowser/VER', // 360Browser
+        'QHBrowser' => 'QHBrowser/VER', // 360Browser
+
+        'SogouMobileBrowser' => 'SogouMobileBrowser/VER', // SogouBrowser
+
+        'MaxthonMXiOS' => 'MXiOS/VER',
+        'Maxthon' => 'Maxthon/VER',
         'Edge' => 'Edge/VER',
         'Vivaldi' => 'Vivaldi/VER',
         'Chrome' => 'Chrome/VER',
@@ -124,7 +139,7 @@ class UserAgentParser implements \JsonSerializable
         'Bolt' => 'bolt',
         'TeaShark' => 'teashark',
         'Blazer' => 'Blazer',
-        'baiduboxapp' => 'baiduboxapp',
+        'BaiduApp' => 'baiduboxapp',
         'baidubrowser' => 'baidubrowser',
         'Mozilla' => 'Mozilla/VER',
     ];
