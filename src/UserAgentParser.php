@@ -133,6 +133,7 @@ class UserAgentParser implements \JsonSerializable
         'MaxthonMXiOS' => 'MXiOS/VER',
         'Maxthon' => 'Maxthon/VER',
         'Edge' => 'Edge/VER',
+        'YaBrowser' => 'YaBrowser/VER', // Yandex Browser (Yowser)
         'Vivaldi' => 'Vivaldi/VER',
         'Chrome' => 'Chrome/VER',
         'Firefox' => 'Firefox/VER',
