@@ -96,12 +96,25 @@ class UserAgentParser implements \JsonSerializable
     ];
 
     protected $systemRules = [
+        // (Linux; U; Android 4.4.4; zh-cn; 2014811 Build/KTU84P)
+        'Android' => 'Android\ ([\w._\+]+);',
         'AndroidOS' => 'Android',
+        // (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) 
+        'iPhone iOS' => 'iPhone OS (\w+_\w+_\w+)',
+        // (iPad; CPU OS 11_0 like Mac OS X)
+        // (iPad; CPU OS 11_0 like Mac OS X)
+        'iPad iOS' => 'iPad; CPU OS (\w+_\w+) like Mac OS X',
         'iOS' => '\biPhone.*Mobile|\biPod|\biPad|AppleCoreMedia',
+
+        // 'Mac OS X' => 'Mac OS X',
+        // (Macintosh; Intel Mac OS X 10_13_6)
+        'Mac OS X' => 'Mac\ OS\ X\ (\w+_\w+_\w+)',
+        'MacOSX' => 'Mac OS X',
+
         'Windows Phone' => 'Windows Phone',
         'Windows' => 'Windows',
         'Windows NT' => 'Windows NT',
-        'Mac OS X' => 'Mac OS X',
+        
         'Debian' => 'Debian',
         'Ubuntu' => 'Ubuntu',
         'Macintosh' => 'PPC',
@@ -156,7 +169,7 @@ class UserAgentParser implements \JsonSerializable
                 break;
             }
         }
-        return $this->device;
+        return $this->system;
     }
 
     public function getSystemName()
@@ -166,6 +179,15 @@ class UserAgentParser implements \JsonSerializable
         }
 
         return !empty($this->system['name']) ? $this->system['name'] : 'unknown';
+    }
+
+    public function getSystemVersion()
+    {
+        if (empty($this->system)) {
+            $this->getSystem();
+        }
+
+        return !empty($this->system['version']) ? $this->system['version'] : 'unknown';
     }
 
     public function getDevice()
