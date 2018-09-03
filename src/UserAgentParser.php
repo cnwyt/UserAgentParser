@@ -124,24 +124,33 @@ class UserAgentParser implements \JsonSerializable
     ];
 
     protected $browserRules = [
+        // spider
+        'Baiduspider' => 'Baiduspider',
+        'Bingbot' => 'Bingbot',
+        'Googlebot' => 'Googlebot',
+        'Sogou web spider' => 'Sogou web spider/VER',
+        'Sogou inst spider' => 'Sogou inst spider/VER',
+        '360Spider' => '360Spider',
+        'HaoSouSpider' => 'HaoSouSpider',
+
         'MQQBrowser' => 'MQQBrowser/VER', // QQBrowser mobile
         'QQ-MttCustomUA' => 'MttCustomUA/VER', // QQBrowser mobile CustomUA
         'MicroMessenger' => 'MicroMessenger/VER', // Wechat(MicroMessenger)
 
-        'BaiduApp' => 'baiduboxapp/VER',
+        'BaiduApp' => 'baiduboxapp/VER',  // Baidu App
         'baidubrowser' => 'baidubrowser/VER',
-        'Chrome CriOS' => 'CriOS/VER',
-        'Firefox FxiOS' => 'FxiOS/VER',
-        'Opera OPiOS' => 'OPiOS/VER',
+        'Chrome CriOS' => 'CriOS/VER', // Chrome mobile
+        'Firefox FxiOS' => 'FxiOS/VER', // Firefox mobile
+        'Opera OPiOS' => 'OPiOS/VER', // Opera mobile
         'Opera' => 'OPR/VER',
         'UCQuark' => 'Quark/VER', // UCBrowser Quark
-        'UCBrowser' => 'UCBrowser/VER',
+        'UCBrowser' => 'UCBrowser/VER',  // UCBrowser
         'UCWEB' => 'UCWEB/VER',
 
         'QihooBrowser' => 'QihooBrowser/VER', // 360Browser
         'QHBrowser' => 'QHBrowser/VER', // 360Browser
 
-        'SogouMobileBrowser' => 'SogouMobileBrowser/VER', // SogouBrowser
+        'SogouMobileBrowser' => 'SogouMobileBrowser/VER', // SogouBrowser mobile
 
         'MaxthonMXiOS' => 'MXiOS/VER',
         'Maxthon' => 'Maxthon/VER',
