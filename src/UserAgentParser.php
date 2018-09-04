@@ -7,7 +7,7 @@ class UserAgentParser implements \JsonSerializable
     /**
      * @var string
      */
-    protected $version = '0.4.0';
+    protected $version = '0.5.0';
 
     protected $userAgent = '';
     protected $browser = [];
@@ -18,6 +18,9 @@ class UserAgentParser implements \JsonSerializable
     protected $matchPattern = null;
     protected $matchArray = [];
 
+    /**
+     * @return array
+     */
     public function jsonSerialize()
     {
         return [
@@ -60,6 +63,7 @@ class UserAgentParser implements \JsonSerializable
                 break;
             }
         }
+
         return $result;
     }
 
@@ -92,6 +96,9 @@ class UserAgentParser implements \JsonSerializable
         return $this->userAgent;
     }
 
+    /**
+     * @return bool
+     */
     public function isMobile()
     {
         return $this->isIOS() || $this->isAndroidOS();
@@ -107,24 +114,17 @@ class UserAgentParser implements \JsonSerializable
      */
     protected $deviceRules = [
         // mobile phone
-        'Huawei' => 'HUAWEISTF',
         'iPhone' => '\biPhone\b|\biPod\b',
-        'OPPO R11st' => 'OPPO R11st',
-        'OPPO' => 'OPPO',
-        'SAMSUNG-G900P' => 'SM-G900P',
-        'SAMSUNG-N900T' => 'SM-N900T',
-        'Pixel 2 XL' => 'Pixel 2 XL',
-        'Pixel 2' => 'Pixel 2',
-        'Nexus' => 'Nexus',
-        'Lumia 520' => 'Lumia 520',
-        'NOKIA' => 'NOKIA',
-
         // tablet
         'iPad' => 'iPad|iPad.*Mobile',
 
         'MacOSX(Intel)' => 'Intel Mac OS X',
         'Mac' => 'Macintosh',
     ];
+
+    /**
+     * @var array
+     */
     protected $androidDeviceRules = [
         // mobile phone
         'HUAWEI' => 'HUAWEI',
@@ -133,20 +133,21 @@ class UserAgentParser implements \JsonSerializable
         'OPPO R11' => 'OPPO R11',
         'OPPO' => 'OPPO',
         'vivo' => 'vivo',
-        'SAMSUNG-G900P' => 'SM-G900P',
-        'SAMSUNG-N900T' => 'SM-N900T',
+        'MI NOTE' => 'MI NOTE', // xiaomi
+        'MIX' => 'MIX', // xiaomi
+        'Redmi Note' => 'Redmi Note', // xiaomi: red mi
+        'Redmi' => 'Redmi', // xiaomi: red mi
+        'SAMSUNG' => 'SM-',  // SAMSUNG
+        'SAMSUNG-G900P' => 'SM-G900P', // SAMSUNG
+        'SAMSUNG-N900T' => 'SM-N900T', // SAMSUNG
         'Pixel 2 XL' => 'Pixel 2 XL',
         'Pixel 2' => 'Pixel 2',
         'Nexus' => 'Nexus',
-        'Lumia 520' => 'Lumia 520',
-        'NOKIA' => 'NOKIA',
-        'MIX' => 'MIX',
-        'MI NOTE' => 'MI NOTE',
-        'Redmi' => 'Redmi',
-        'SAMSUNG' => 'SM-',
         'TCL' => 'TCL',
         'ZUK' => 'ZUK',
         'Coolpad' => 'Coolpad',
+        'Lumia 520' => 'Lumia 520',
+        'NOKIA' => 'NOKIA',
     ];
 
     /**
@@ -316,6 +317,9 @@ class UserAgentParser implements \JsonSerializable
         return $this->device = $this->phraseResult($rules);
     }
 
+    /**
+     * @return string
+     */
     public function getDeviceName()
     {
         if (empty($this->device)) {
@@ -325,27 +329,26 @@ class UserAgentParser implements \JsonSerializable
         return !empty($this->device['name']) ? $this->device['name'] : 'unknown';
     }
 
-    public function getBrowserName()
+    /**
+     * @return string
+     */
+    public function getDeviceVersion()
     {
-        if (empty($this->browser)) {
-            $this->getBrowser();
+        if (empty($this->device)) {
+            $this->getDevice();
         }
 
-        return !empty($this->browser['name']) ? $this->browser['name'] : 'unknown';
+        return !empty($this->device['version']) ? $this->device['version'] : 'unknown';
     }
 
-    public function getBrowserVersion()
-    {
-        if (empty($this->browser)) {
-            $this->getBrowser();
-        }
-
-        return !empty($this->browser['version']) ? $this->browser['version'] : '';
-    }
-
+    /**
+     * @return array
+     */
     public function getBrowser()
     {
-        foreach ($this->browserRules as $key => $regex) {
+        $rules = $this->browserRules;
+
+        foreach ($rules as $key => $regex) {
             $regex = str_ireplace('VER', $this->versionRegex, $regex);
             if ($regex && $this->pregMatch($regex, $this->userAgent)) {
                 $this->browser = [
@@ -359,35 +362,81 @@ class UserAgentParser implements \JsonSerializable
     }
 
 
+    /**
+     * @return string
+     */
+    public function getBrowserName()
+    {
+        if (empty($this->browser)) {
+            $this->getBrowser();
+        }
+
+        return !empty($this->browser['name']) ? $this->browser['name'] : 'unknown';
+    }
+
+    /**
+     * @return string
+     */
+    public function getBrowserVersion()
+    {
+        if (empty($this->browser)) {
+            $this->getBrowser();
+        }
+
+        return !empty($this->browser['version']) ? $this->browser['version'] : '';
+    }
+
+    /**
+     * @return bool
+     */
     public function isIOS()
     {
         return stripos($this->userAgent, 'iPhone') !== false;
     }
 
+    /**
+     * @return bool
+     */
     public function isAndroidOS()
     {
         return stripos($this->userAgent, 'Android') !== false;
     }
 
+    /**
+     * @return bool
+     */
     public function isMacintosh()
     {
         return stripos($this->userAgent, 'Macintosh') !== false;
     }
 
+    /**
+     * @return bool
+     */
     public function isWindows()
     {
         return stripos($this->userAgent, 'Windows') !== false;
     }
 
+    /**
+     * @return bool
+     */
     public function isMSIE()
     {
         return stripos($this->userAgent, 'MSIE') !== false;
     }
 
+    /**
+     * @return bool
+     */
     public function isWechatBrowser()
     {
         return stripos($this->userAgent, 'MicroMessenger') !== false;
     }
+
+    /**
+     * @return bool
+     */
     public function getWechatVersion()
     {
         if ($this->pregMatch('MicroMessenger/' . $this->versionRegex, $this->userAgent)) {
@@ -395,6 +444,21 @@ class UserAgentParser implements \JsonSerializable
         }
 
         return false;
+    }
+
+    /**
+     * @return bool|string
+     */
+    public function getNetType()
+    {
+        $netType = 'Unknown';
+        if (stripos($this->userAgent, 'netType') !== false) {
+            if ($this->pregMatch('netType/(\S+)', $this->userAgent)) {
+                return $this->matchArray[1] ?? 'unknown';
+            }
+        }
+
+        return $netType;
     }
 
 }
