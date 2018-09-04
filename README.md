@@ -1,10 +1,9 @@
 README.md
 
 
-[cnwyt/user-agent-parser](https://packagist.org/packages/cnwyt/user-agent-parser)
-
-
 ### Install
+
+Packagist [cnwyt/user-agent-parser](https://packagist.org/packages/cnwyt/user-agent-parser)
 
 ```
 composer require cnwyt/user-agent-parser
