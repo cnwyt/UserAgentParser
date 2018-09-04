@@ -1,5 +1,6 @@
-README.md
+*UserAgentParser*
 
+A Simple PHP User Agent Parser
 
 ### Install
 
