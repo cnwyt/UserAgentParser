@@ -127,11 +127,12 @@ class UserAgentParser implements \JsonSerializable
      */
     protected $androidDeviceRules = [
         // mobile phone
-        'HUAWEI' => 'HUAWEI',
         'Huawei' => 'HUAWEISTF',
+        'HUAWEI' => 'HUAWEI',
         'OPPO R11st' => 'OPPO R11st',
         'OPPO R11' => 'OPPO R11',
         'OPPO' => 'OPPO',
+        'vivo NEX' => 'vivo NEX', // vivo NEX: 2018-06-12
         'vivo' => 'vivo',
         'MI NOTE' => 'MI NOTE', // xiaomi
         'MIX' => 'MIX', // xiaomi
@@ -237,11 +238,16 @@ class UserAgentParser implements \JsonSerializable
         'UCQuark' => 'Quark/VER', // UCBrowser Quark
         'UCBrowser' => 'UCBrowser/VER',  // UCBrowser
         'UCWEB' => 'UCWEB/VER',
+        'LieBaoFast' => 'LieBaoFast/VER', // Libebao
+        'MiuiBrowser' => 'MiuiBrowser/VER', // MiuiBrowser
 
         'QihooBrowser' => 'QihooBrowser/VER', // 360Browser
         'QHBrowser' => 'QHBrowser/VER', // 360Browser
 
+        'DolphinBrowserCN' => 'DolphinBrowserCN/VER', // DolphinBrowserCN
         'SogouMobileBrowser' => 'SogouMobileBrowser/VER', // SogouBrowser mobile
+        'MiniBrowser' => 'MiniBrowser/VER', // MiniBrowser mobile
+        'Mb2345Browser' => 'Mb2345Browser/VER', // 2345Browser
 
         'MaxthonMXiOS' => 'MXiOS/VER',
         'Maxthon' => 'Maxthon/VER',
