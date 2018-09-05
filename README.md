@@ -1,6 +1,10 @@
-README.md
+*UserAgentParser*
+
+A Simple PHP User Agent Parser
 
 ### Install
+
+Packagist [cnwyt/user-agent-parser](https://packagist.org/packages/cnwyt/user-agent-parser)
 
 ```
 composer require cnwyt/user-agent-parser
