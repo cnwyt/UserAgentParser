@@ -224,11 +224,13 @@ class UserAgentParser implements \JsonSerializable
         'Sogou inst spider' => 'Sogou inst spider/VER',
         '360Spider' => '360Spider',
         'HaoSouSpider' => 'HaoSouSpider',
+        
+        'MicroMessenger' => 'MicroMessenger/VER', // Tencent Wechat(MicroMessenger)
+        'MQQBrowser' => 'MQQBrowser/VER', // Tencent QQBrowser mobile
+        'QQ-MttCustomUA' => 'MttCustomUA/VER', // Tencent QQBrowser mobile CustomUA
+        'QQ' => 'QQ/VER', // Tencent QQ
 
-        'MQQBrowser' => 'MQQBrowser/VER', // QQBrowser mobile
-        'QQ-MttCustomUA' => 'MttCustomUA/VER', // QQBrowser mobile CustomUA
-        'MicroMessenger' => 'MicroMessenger/VER', // Wechat(MicroMessenger)
-
+        'AlipayClient' => 'AlipayClient/VER',  // Alipay App
         'BaiduApp' => 'baiduboxapp/VER',  // Baidu App
         'baidubrowser' => 'baidubrowser/VER',
         'Chrome CriOS' => 'CriOS/VER', // Chrome mobile
