@@ -10,6 +10,7 @@ class UserAgentParser implements \JsonSerializable
     protected $version = '0.5.0';
 
     protected $userAgent = '';
+    protected $md5 = '';
     protected $browser = [];
     protected $system = [];
     protected $device = [];
@@ -17,6 +18,15 @@ class UserAgentParser implements \JsonSerializable
 
     protected $matchPattern = null;
     protected $matchArray = [];
+
+    /**
+     * @param string $userAgent
+     */
+    public function __construct($userAgent = '')
+    {
+        $this->userAgent = $userAgent;
+        $this->md5 = md5($userAgent);
+    }
 
     /**
      * @return array
@@ -136,11 +146,13 @@ class UserAgentParser implements \JsonSerializable
         'vivo' => 'vivo',
         'MI NOTE' => 'MI NOTE', // xiaomi
         'MIX' => 'MIX', // xiaomi
+        'MX4 Pro' => 'MX4 Pro', // xiaomi: MX4 Pro
         'Redmi Note' => 'Redmi Note', // xiaomi: red mi
         'Redmi' => 'Redmi', // xiaomi: red mi
-        'SAMSUNG' => 'SM-',  // SAMSUNG
-        'SAMSUNG-G900P' => 'SM-G900P', // SAMSUNG
-        'SAMSUNG-N900T' => 'SM-N900T', // SAMSUNG
+        'SamSung-G900P' => 'SM-G900P', // SAMSUNG
+        'SamSung-N900T' => 'SM-N900T', // SAMSUNG
+        'SamSung-Galaxy-S8' => 'SM-G95', // SAMSUNG Galaxy S8
+        'SamSung' => 'SM-',  // SAMSUNG
         'Pixel 2 XL' => 'Pixel 2 XL',
         'Pixel 2' => 'Pixel 2',
         'Nexus' => 'Nexus',
@@ -156,7 +168,7 @@ class UserAgentParser implements \JsonSerializable
      */
     protected $defaultSystemRules = [
         // (Linux; U; Android 4.4.4; zh-cn; 2014811 Build/KTU84P)
-        'Android' => 'Android\ ([\w._\+]+);',
+        'Android' => 'Android\ ([\w.+]+);',
         'AndroidOS' => 'Android',
         // (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) 
         'iPhone iOS' => 'iPhone OS (\w+_\w+_\w+)',
@@ -240,8 +252,11 @@ class UserAgentParser implements \JsonSerializable
         'UCQuark' => 'Quark/VER', // UCBrowser Quark
         'UCBrowser' => 'UCBrowser/VER',  // UCBrowser
         'UCWEB' => 'UCWEB/VER',
-        'LieBaoFast' => 'LieBaoFast/VER', // Libebao
+        'LieBaoFast' => 'LieBaoFast/VER', // CMCM: Libebao
+        'SamsungBrowser' => 'SamsungBrowser/VER', // SamsungBrowser
         'MiuiBrowser' => 'MiuiBrowser/VER', // MiuiBrowser
+        'OppoBrowser' => 'OppoBrowser/VER', // OppoBrowser
+        'VivoBrowser' => 'VivoBrowser/VER', // VivoBrowser
 
         'QihooBrowser' => 'QihooBrowser/VER', // 360Browser
         'QHBrowser' => 'QHBrowser/VER', // 360Browser
@@ -330,7 +345,7 @@ class UserAgentParser implements \JsonSerializable
      */
     public function getDeviceName()
     {
-        if (empty($this->device)) {
+        if (empty($this->device) || $this->md5 != md5($this->userAgent)) {
             $this->getDevice();
         }
 
@@ -342,7 +357,7 @@ class UserAgentParser implements \JsonSerializable
      */
     public function getDeviceVersion()
     {
-        if (empty($this->device)) {
+        if (empty($this->device) || $this->md5 != md5($this->userAgent)) {
             $this->getDevice();
         }
 
@@ -375,7 +390,7 @@ class UserAgentParser implements \JsonSerializable
      */
     public function getBrowserName()
     {
-        if (empty($this->browser)) {
+        if (empty($this->browser) || $this->md5 != md5($this->userAgent)) {
             $this->getBrowser();
         }
 
@@ -387,7 +402,7 @@ class UserAgentParser implements \JsonSerializable
      */
     public function getBrowserVersion()
     {
-        if (empty($this->browser)) {
+        if (empty($this->browser) || $this->md5 != md5($this->userAgent)) {
             $this->getBrowser();
         }
 
@@ -459,10 +474,17 @@ class UserAgentParser implements \JsonSerializable
      */
     public function getNetType()
     {
-        $netType = 'Unknown';
-        if (stripos($this->userAgent, 'netType') !== false) {
-            if ($this->pregMatch('netType/(\S+)', $this->userAgent)) {
-                return $this->matchArray[1] ?? 'unknown';
+        $netType = 'unknown';
+        // wechat: "NetType/WIFI"
+        if (stripos($this->userAgent, 'NetType') !== false) {
+            if ($this->pregMatch('NetType/(\S+)', $this->userAgent)) {
+                $netType = $this->matchArray[1] ?? 'unknown';
+            }
+        }
+        // aliApp: "AlipayDefined(nt:WIFI,ws:414|672|3.0)"
+        if (stripos($this->userAgent, 'nt:') !== false) {
+            if ($this->pregMatch('\(nt:(\S+),', $this->userAgent)) {
+                $netType = $this->matchArray[1] ?? 'unknown';
             }
         }
 

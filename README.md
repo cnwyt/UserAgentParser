@@ -7,7 +7,7 @@ A Simple PHP User Agent Parser
 Packagist [cnwyt/user-agent-parser](https://packagist.org/packages/cnwyt/user-agent-parser)
 
 ```
-composer require cnwyt/user-agent-parser
+$ composer require cnwyt/user-agent-parser
 ```
 
 ### Usage
@@ -43,3 +43,8 @@ $isAndroid = $agent->isAndroidOS();
 $isWechat =  $agent->isWechatBrowser();
 ```
 
+### Tests
+
+```
+$ ./vendor/bin/phpunit tests/
+```
