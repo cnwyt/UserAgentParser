@@ -42,6 +42,19 @@ class UserAgentParser implements \JsonSerializable
     }
 
     /**
+     * @return array
+     */
+    public function result()
+    {
+        return [
+            'browser' => $this->getBrowser(),
+            'system' => $this->getSystem(),
+            'device' => $this->getDevice(),
+            'netType' => $this->getNetType(),
+        ];
+    }
+
+    /**
      * @param $regex
      * @param null $userAgent
      * @return bool
@@ -64,10 +77,10 @@ class UserAgentParser implements \JsonSerializable
     protected function phraseResult($rules)
     {
         $result = [];
-        foreach ($rules as $key => $regex) {
+        foreach ($rules as $regex => $name) {
             if ($regex && $this->pregMatch($regex, $this->userAgent)) {
                 $result = [
-                    'name' => $key,
+                    'name' => $name,
                     'version' => $this->matchArray[1] ?? '',
                 ];
                 break;
@@ -80,7 +93,7 @@ class UserAgentParser implements \JsonSerializable
     /**
      * Get the platform name.
      *
-     * @param  string $userAgent
+     * @param string $userAgent
      * @return string
      */
     public function platform($userAgent = null)
@@ -107,14 +120,6 @@ class UserAgentParser implements \JsonSerializable
     }
 
     /**
-     * @return bool
-     */
-    public function isMobile()
-    {
-        return $this->isIOS() || $this->isAndroidOS();
-    }
-
-    /**
      * @var string
      */
     protected $versionRegex = '([\w._\+]+)';
@@ -124,35 +129,35 @@ class UserAgentParser implements \JsonSerializable
      */
     protected $deviceRules = [
         // mobile phone
-        'iPhone' => '\biPhone\b|\biPod\b',
+        '\biPhone\b|\biPod\b' => 'iPhone',
         // tablet
-        'iPad' => 'iPad|iPad.*Mobile',
-
-        'MacOSX(Intel)' => 'Intel Mac OS X',
-        'Mac' => 'Macintosh',
+        'iPad|iPad.*Mobile' => 'iPad',
+        'Intel Mac OS X' => 'MacOSX(Intel)',
+        'Macintosh' => 'Macintosh',
+        'Windows' => 'Windows',
+        'Linux' => 'Linux',
     ];
 
     /**
      * @var array
      */
     protected $androidDeviceRules = [
-        // mobile phone
-        'Huawei' => 'HUAWEISTF',
+        'HUAWEISTF' => 'Huawei',
         'HUAWEI' => 'HUAWEI',
         'OPPO R11st' => 'OPPO R11st',
         'OPPO R11' => 'OPPO R11',
         'OPPO' => 'OPPO',
-        'vivo NEX' => 'vivo NEX', // vivo NEX: 2018-06-12
+        'vivo NEX' => 'vivo NEX',
         'vivo' => 'vivo',
-        'MI NOTE' => 'MI NOTE', // xiaomi
-        'MIX' => 'MIX', // xiaomi
-        'MX4 Pro' => 'MX4 Pro', // xiaomi: MX4 Pro
-        'Redmi Note' => 'Redmi Note', // xiaomi: red mi
-        'Redmi' => 'Redmi', // xiaomi: red mi
-        'SamSung-G900P' => 'SM-G900P', // SAMSUNG
-        'SamSung-N900T' => 'SM-N900T', // SAMSUNG
-        'SamSung-Galaxy-S8' => 'SM-G95', // SAMSUNG Galaxy S8
-        'SamSung' => 'SM-',  // SAMSUNG
+        'MI NOTE' => 'MI NOTE',
+        'MIX' => 'MIX',
+        'MX4 Pro' => 'MX4 Pro',
+        'Redmi Note' => 'Redmi Note',
+        'Redmi' => 'Redmi',
+        'SM-G900P' => 'SamSung-G900P',
+        'SM-N900T' => 'SamSung-N900T',
+        'SM-G95' => 'SamSung-Galaxy-S8',
+        'SM-' => 'SamSung',
         'Pixel 2 XL' => 'Pixel 2 XL',
         'Pixel 2' => 'Pixel 2',
         'Nexus' => 'Nexus',
@@ -168,26 +173,26 @@ class UserAgentParser implements \JsonSerializable
      */
     protected $defaultSystemRules = [
         // (Linux; U; Android 4.4.4; zh-cn; 2014811 Build/KTU84P)
-        'Android' => 'Android\ ([\w.+]+);',
-        'AndroidOS' => 'Android',
-        // (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) 
-        'iPhone iOS' => 'iPhone OS (\w+_\w+_\w+)',
+        'Android\ ([\w.+]+);' => 'Android',
+        'Android' => 'AndroidOS',
+        // (iPhone; CPU iPhone OS 10_3_1 like Mac OS X)
+        'iPhone OS (\w+_\w+_\w+)' => 'iPhone',
         // (iPad; CPU OS 11_0 like Mac OS X)
         // (iPad; CPU OS 11_0 like Mac OS X)
-        'iPad iOS' => 'iPad; CPU OS (\w+_\w+) like Mac OS X',
-        'iOS' => '\biPhone.*Mobile|\biPod|\biPad|AppleCoreMedia',
+        'iPad; CPU OS (\w+_\w+) like' => 'iPad',
+        '\biPhone.*Mobile|\biPod|\biPad|AppleCoreMedia' => 'iPhone',
 
         // 'Mac OS X' => 'Mac OS X',
         // (Macintosh; Intel Mac OS X 10_13_6)
-        'Mac OS X' => 'Mac\ OS\ X\ (\w+_\w+_\w+)',
-        'MacOSX' => 'Mac OS X',
-
+        'Mac\ OS\ X\ (\w+_\w+_\w+)' => 'Mac',
+        'Mac OS X' => 'Mac',
+        'Macintosh' => 'Mac',
+        // linux
         'Debian' => 'Debian',
         'Ubuntu' => 'Ubuntu',
-        'Macintosh' => 'PPC',
         'OpenBSD' => 'OpenBSD',
         'Linux' => 'Linux',
-        'ChromeOS' => 'CrOS',
+        'CrOS' => 'ChromeOS',
     ];
 
     /**
@@ -203,89 +208,117 @@ class UserAgentParser implements \JsonSerializable
         // NT6.3    Windows 8.1
         // NT6.4    Windows 10
         // NT10.0   Windows 10
-        'Windows2000' => 'Windows NT (5.0)',
-        'WindowsXP' => 'Windows NT (5.1)|Windows NT (5.2)',
-        'WindowsVista' => 'Windows NT (6.0)',
-        'Windows7' => 'Windows NT (6.1)',
-        'Windows8' => 'Windows NT (6.2)|Windows NT (6.3)',
-        'Windows10' => 'Windows NT (6.4)|Windows NT (10.0)',
-        'WindowsPhone' => 'Windows Phone',
-        'WindowsNT' => 'Windows NT',
+        'Windows NT (5.0)' => 'Windows2000',
+        'Windows NT (5.1)|Windows NT (5.2)' => 'WindowsXP',
+        'Windows NT (6.0)' => 'WindowsVista',
+        'Windows NT (6.1)' => 'Windows7',
+        'Windows NT (6.2)|Windows NT (6.3)' => 'Windows8',
+        'Windows NT (6.4)|Windows NT (10.0)' => 'Windows10',
+        'Windows Phone' => 'Windows Phone',
+        'Windows NT' => 'Windows NT',
         'Windows' => 'Windows',
     ];
 
     /**
      * @var array
      */
-    protected $macintoshSystemRules = [
-        // 'Mac OS X' => 'Mac OS X',
+    protected $macSystemRules = [
         // (Macintosh; Intel Mac OS X 10_13_6)
-        'Mac OS X' => 'Mac\ OS\ X\ (\w+_\w+_\w+)',
-        'MacOSX' => 'Mac OS X',
+        'Mac\ OS\ X\ (\w+_\w+_\w+)' => 'Mac OS X',
+        'Mac\ OS\ X\ (\w+.\w+)' => 'Mac OS X', // Mac OS X 10.15
+        'Mac OS X' => 'Mac OS X',
+        'Macintosh' => 'Macintosh',
     ];
 
     /**
      * @var array
      */
     protected $browserRules = [
-        // spider
         'Baiduspider' => 'Baiduspider',
         'Bingbot' => 'Bingbot',
         'Googlebot' => 'Googlebot',
-        'Sogou web spider' => 'Sogou web spider/VER',
-        'Sogou inst spider' => 'Sogou inst spider/VER',
+        'Sogou web spider/VER' => 'Sogou web spider',
+        'Sogou inst spider/VER' => 'Sogou inst spider',
         '360Spider' => '360Spider',
         'HaoSouSpider' => 'HaoSouSpider',
-        
-        'MicroMessenger' => 'MicroMessenger/VER', // Tencent Wechat(MicroMessenger)
-        'MQQBrowser' => 'MQQBrowser/VER', // Tencent QQBrowser mobile
-        'QQ-MttCustomUA' => 'MttCustomUA/VER', // Tencent QQBrowser mobile CustomUA
-        'QQ' => 'QQ/VER', // Tencent QQ
-
-        'AlipayClient' => 'AlipayClient/VER',  // Alipay App
-        'BaiduApp' => 'baiduboxapp/VER',  // Baidu App
-        'baidubrowser' => 'baidubrowser/VER',
-        'Chrome CriOS' => 'CriOS/VER', // Chrome mobile
-        'Firefox FxiOS' => 'FxiOS/VER', // Firefox mobile
-        'Opera OPiOS' => 'OPiOS/VER', // Opera mobile
-        'Opera' => 'OPR/VER',
-        'UCQuark' => 'Quark/VER', // UCBrowser Quark
-        'UCBrowser' => 'UCBrowser/VER',  // UCBrowser
-        'UCWEB' => 'UCWEB/VER',
-        'LieBaoFast' => 'LieBaoFast/VER', // CMCM: Libebao
-        'SamsungBrowser' => 'SamsungBrowser/VER', // SamsungBrowser
-        'MiuiBrowser' => 'MiuiBrowser/VER', // MiuiBrowser
-        'OppoBrowser' => 'OppoBrowser/VER', // OppoBrowser
-        'VivoBrowser' => 'VivoBrowser/VER', // VivoBrowser
-
-        'QihooBrowser' => 'QihooBrowser/VER', // 360Browser
-        'QHBrowser' => 'QHBrowser/VER', // 360Browser
-
-        'DolphinBrowserCN' => 'DolphinBrowserCN/VER', // DolphinBrowserCN
-        'SogouMobileBrowser' => 'SogouMobileBrowser/VER', // SogouBrowser mobile
-        'MiniBrowser' => 'MiniBrowser/VER', // MiniBrowser mobile
-        'Mb2345Browser' => 'Mb2345Browser/VER', // 2345Browser
-
-        'MaxthonMXiOS' => 'MXiOS/VER',
-        'Maxthon' => 'Maxthon/VER',
-        'Edge' => 'Edge/VER',
-        'YaBrowser' => 'YaBrowser/VER', // Yandex Browser (Yowser)
-        'Vivaldi' => 'Vivaldi/VER',
-        'Chrome' => 'Chrome/VER',
-        'Firefox' => 'Firefox/VER',
-        'Safari' => 'Safari/VER',
-        // MSIE 8.0;
-        'IE6' => 'MSIE\ (6.\w+);',
-        'IE7' => 'MSIE\ (7.\w+);',
-        'IE8' => 'MSIE\ (8.\w+);',
-        'IE9' => 'MSIE\ (9.\w+);',
-        'IE10' => 'MSIE\ (10.\w+);',
-        'IE' => 'MSIE|IEMobile|MSIEMobile|Trident/[.0-9]+',
-        'Bolt' => 'bolt/VER',
-        'TeaShark' => 'teashark/VER',
-        'Blazer' => 'Blazer/VER',
-        'Mozilla' => 'Mozilla/VER',
+        'MicroMessenger/VER' => 'MicroMessenger',
+        'MQQBrowser/VER' => 'MQQBrowser',
+        'MttCustomUA/VER' => 'QQ-MttCustomUA',
+        'QQ/VER' => 'QQ',
+        'AlipayClient/VER' => 'AlipayClient',
+        'baiduboxapp/VER' => 'BaiduApp',
+        'baidubrowser/VER' => 'baidubrowser',
+        'CriOS/VER' => 'Chrome CriOS',
+        'FxiOS/VER' => 'Firefox FxiOS',
+        'OPiOS/VER' => 'Opera OPiOS',
+        'OPR/VER' => 'Opera',
+        'Opera/VER' => 'Opera',
+        'Quark/VER' => 'UCQuark',
+        'UCBrowser/VER' => 'UCBrowser',
+        'UCWEB/VER' => 'UCWEB',
+        'LieBaoFast/VER' => 'LieBaoFast',
+        'SamsungBrowser/VER' => 'SamsungBrowser',
+        'MiuiBrowser/VER' => 'MiuiBrowser',
+        'OppoBrowser/VER' => 'OppoBrowser',
+        'VivoBrowser/VER' => 'VivoBrowser',
+        'QihooBrowser/VER' => 'QihooBrowser',
+        'QHBrowser/VER' => 'QHBrowser',
+        'DolphinBrowserCN/VER' => 'DolphinBrowserCN',
+        'SogouMobileBrowser/VER' => 'SogouMobileBrowser',
+        'MiniBrowser/VER' => 'MiniBrowser',
+        'Mb2345Browser/VER' => 'Mb2345Browser',
+        'MXiOS/VER' => 'MaxthonMXiOS',
+        'Maxthon/VER' => 'Maxthon',
+        'Edge/VER' => 'Edge',
+        'YaBrowser/VER' => 'YaBrowser',
+        'Vivaldi/VER' => 'Vivaldi',
+        'Chrome/VER' => 'Chrome',
+        'Firefox/VER' => 'Firefox',
+        'Safari/VER' => 'Safari',
+        'MSIE\ (6.\w+);' => 'IE6',
+        'MSIE\ (7.\w+);' => 'IE7',
+        'MSIE\ (8.\w+);' => 'IE8',
+        'MSIE\ (9.\w+);' => 'IE9',
+        'MSIE\ (10.\w+);' => 'IE10',
+        'MSIE|IEMobile|MSIEMobile|Trident/[.0-9]+' => 'IE',
+        'bolt/VER' => 'Bolt',
+        'teashark/VER' => 'TeaShark',
+        'Blazer/VER' => 'Blazer',
+        'Mozilla/VER' => 'Mozilla',
     ];
+
+    public function getOSName(): string
+    {
+        $agent = $this->userAgent;
+
+        if (preg_match('/(Spider|Crawl|Bot)/i', $agent)) {
+            $os = 'Spider';
+        } elseif (strpos($agent, 'Windows')) {
+            $os = 'Windows';
+        } elseif (strpos($agent, 'Macintosh')) {
+            $os = 'Macintosh';
+        } elseif (strpos($agent, 'Android')) {
+            $os = 'Android';
+        } elseif (strpos($agent, 'iPhone')) {
+            $os = 'iPhone';
+        } elseif (strpos($agent, 'iPad')) {
+            $os = 'iPad';
+        } elseif (strpos($agent, 'Linux')) {
+            $os = 'Linux';
+        } elseif (strpos($agent, 'FreeBSD')) {
+            $os = 'FreeBSD';
+        } elseif (strpos($agent, 'SunOS')) {
+            $os = 'SunOS';
+        } elseif (strpos($agent, 'OS/2')) {
+            $os = 'OS/2';
+        } elseif (strpos($agent, 'AIX')) {
+            $os = 'AIX';
+        } else {
+            $os = 'others';
+        }
+
+        return $os;
+    }
 
     /**
      * @return array
@@ -295,7 +328,7 @@ class UserAgentParser implements \JsonSerializable
         if ($this->isWindows()) {
             $rules = $this->windowsSystemRules;
         } elseif ($this->isMacintosh()) {
-            $rules = $this->macintoshSystemRules;
+            $rules = $this->macSystemRules;
         } else {
             $rules = $this->defaultSystemRules;
         }
@@ -369,13 +402,11 @@ class UserAgentParser implements \JsonSerializable
      */
     public function getBrowser()
     {
-        $rules = $this->browserRules;
-
-        foreach ($rules as $key => $regex) {
+        foreach ($this->browserRules as $regex => $name) {
             $regex = str_ireplace('VER', $this->versionRegex, $regex);
             if ($regex && $this->pregMatch($regex, $this->userAgent)) {
                 $this->browser = [
-                    'name' => $key,
+                    'name' => $name,
                     'version' => $this->matchArray[1] ?? '',
                 ];
                 break;
@@ -412,6 +443,14 @@ class UserAgentParser implements \JsonSerializable
     /**
      * @return bool
      */
+    public function isMobile(): bool
+    {
+        return $this->isIOS() || $this->isAndroidOS();
+    }
+
+    /**
+     * @return bool
+     */
     public function isIOS()
     {
         return stripos($this->userAgent, 'iPhone') !== false;
@@ -428,7 +467,7 @@ class UserAgentParser implements \JsonSerializable
     /**
      * @return bool
      */
-    public function isMacintosh()
+    public function isMacintosh(): bool
     {
         return stripos($this->userAgent, 'Macintosh') !== false;
     }
@@ -436,7 +475,7 @@ class UserAgentParser implements \JsonSerializable
     /**
      * @return bool
      */
-    public function isWindows()
+    public function isWindows(): bool
     {
         return stripos($this->userAgent, 'Windows') !== false;
     }
@@ -444,7 +483,31 @@ class UserAgentParser implements \JsonSerializable
     /**
      * @return bool
      */
-    public function isMSIE()
+    public function isLinux(): bool
+    {
+        return stripos($this->userAgent, 'Linux') !== false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRobot(): bool
+    {
+        return preg_match('/(Crawl|Spider|Bot)/i', $this->userAgent) ? true : false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSprider(): bool
+    {
+        return $this->isRobot();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMSIE(): bool
     {
         return stripos($this->userAgent, 'MSIE') !== false;
     }
@@ -452,7 +515,7 @@ class UserAgentParser implements \JsonSerializable
     /**
      * @return bool
      */
-    public function isWechatBrowser()
+    public function isWechatBrowser(): bool
     {
         return stripos($this->userAgent, 'MicroMessenger') !== false;
     }

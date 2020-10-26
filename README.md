@@ -6,13 +6,13 @@ A Simple PHP User Agent Parser
 
 Packagist [cnwyt/user-agent-parser](https://packagist.org/packages/cnwyt/user-agent-parser)
 
-```
+```sh
 $ composer require cnwyt/user-agent-parser
 ```
 
 ### Usage
 
-```
+```php
 use Cnwyt\UserAgentParser\UserAgentParser;
 
 
@@ -26,7 +26,6 @@ $agent = (new UserAgentParser());
 $agent->setUserAgent($ua);
 
 // 获取解析结果
-
 $device = $agent->getDeviceName();
 
 $browerName = $agent->getBrowserName();
@@ -45,6 +44,9 @@ $isWechat =  $agent->isWechatBrowser();
 
 ### Tests
 
-```
+```sh
+$ git clone https://github.com/cnwyt/UserAgentParser.git
+$ cd UserAgentParser
+$ composer install
 $ ./vendor/bin/phpunit tests/
 ```
